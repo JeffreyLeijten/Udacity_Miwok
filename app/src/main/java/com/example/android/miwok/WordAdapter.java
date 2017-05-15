@@ -3,10 +3,12 @@ package com.example.android.miwok;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -18,8 +20,12 @@ import java.util.ArrayList;
  */
 
 public class WordAdapter extends ArrayAdapter<Word> {
-    public WordAdapter(Activity context, ArrayList<Word> words){
+
+    private int mColorResourceId;
+
+    public WordAdapter(Activity context, ArrayList<Word> words, int colorResourceId){
         super(context, 0, words);
+        mColorResourceId = colorResourceId;
     }
 
     @Override
@@ -31,11 +37,23 @@ public class WordAdapter extends ArrayAdapter<Word> {
 
         Word currentWord = getItem(position);
 
-        TextView miwokTextview = (TextView) listItemView.findViewById(R.id.miwok_text_view);
-        miwokTextview.setText(currentWord.getMiwokTranslation());
+        TextView miwokTextView = (TextView) listItemView.findViewById(R.id.miwok_text_view);
+        miwokTextView.setText(currentWord.getMiwokTranslation());
 
-        TextView defaultTextview = (TextView) listItemView.findViewById(R.id.default_text_view);
-        defaultTextview.setText(currentWord.getDefaultTranslation());
+        TextView defaultTextView = (TextView) listItemView.findViewById(R.id.default_text_view);
+        defaultTextView.setText(currentWord.getDefaultTranslation());
+
+        ImageView imageView = (ImageView) listItemView.findViewById(R.id.image);
+        if (currentWord.hasImage()) {
+            imageView.setImageResource(currentWord.getImageResourceId());
+            imageView.setVisibility(View.VISIBLE);
+        }
+        else
+            imageView.setVisibility(View.GONE);
+
+        View textContainer = listItemView.findViewById(R.id.text_container);
+        int color = ContextCompat.getColor(getContext(), mColorResourceId);
+        textContainer.setBackgroundColor(color);
 
         return listItemView;
     }
